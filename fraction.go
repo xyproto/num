@@ -35,16 +35,12 @@ func abs(a int) int {
 func (my *Fraction) reduce() {
 	var maxtry int = 300
 	for trydiv := min(maxtry, min(abs(my.num), abs(my.dum))); trydiv >= 2; trydiv-- {
-		for (my.num/trydiv)*trydiv == my.num && (my.dum/trydiv)*trydiv == my.dum {
+		if (my.num/trydiv)*trydiv == my.num && (my.dum/trydiv)*trydiv == my.dum {
 			my.num /= trydiv
 			my.dum /= trydiv
 		}
 	}
 	my.prettyNegative()
-}
-
-func Multiply(x, y Fraction) Fraction {
-	return NewFraction(x.num * y.num, x.dum * y.dum)
 }
 
 func (my *Fraction) Float64() float64 {
@@ -82,6 +78,18 @@ func (my *Fraction) Multiply(x Fraction) {
 func (my *Fraction) Divide(x Fraction) {
 	my.num *= x.dum
 	my.dum *= x.num
+	my.reduce()
+}
+
+func (my *Fraction) Add(x Fraction) {
+	my.num = my.num*x.dum + x.num*my.dum
+	my.dum = my.dum * x.dum
+	my.reduce()
+}
+
+func (my *Fraction) Sub(x Fraction) {
+	my.num = my.num*x.dum - x.num*my.dum
+	my.dum = my.dum * x.dum
 	my.reduce()
 }
 
@@ -124,7 +132,7 @@ func NewFractionFromFloat64(f float64, maxIterations int) Fraction {
 	dum := 1
 	result := float64(num) / float64(dum)
 	counter := 0
-	for (result != f) {
+	for result != f {
 		if result < f {
 			num++
 		} else {
@@ -201,19 +209,20 @@ func test3() {
 	fmt.Println(f)
 }
 
-func test5() {
+func test4() {
 	var x, y, z Fraction
 	x = NewFractionFromString("1/3")
 	y = NewFractionFromString("2/4")
 	x.Multiply(y)
-	fmt.Println(x.String(), "looks nicer than", (1.0/3.0) * (2.0/4.0))
+	fmt.Println(x.String(), "looks nicer than", (1.0/3.0)*(2.0/4.0))
 	y.MultiplyInt(2)
 	fmt.Println("y is", y.String())
-	z = Multiply(x, y)
-	fmt.Println("z is", z.String(), z.Round(), "(", (1.0/3.0) * (2.0/4.0) * 2 * (2.0/4.0), ")")
+	z = x
+	z.Multiply(y)
+	fmt.Println("z is", z.String(), z.Round(), "(", (1.0/3.0)*(2.0/4.0)*2*(2.0/4.0), ")")
 }
 
-func test6() {
+func test5() {
 	var x, y Fraction
 	x = NewFractionFromInt(3)
 	y = NewFractionFromInt(2)
@@ -223,7 +232,7 @@ func test6() {
 	fmt.Println(x.String(), x.Round())
 }
 
-func test7() {
+func test6() {
 	var pi float64 = 3.14159265359
 	f := NewFractionFromFloat64(0.5, -1)
 	fmt.Println(f, "\t\t", f.String(), "\t\t", f.Float64(), "\t\t", f.Round())
@@ -231,13 +240,31 @@ func test7() {
 	fmt.Println(f, "\t", f.String(), "\t", f.Float64(), "\t", f.Round())
 }
 
-func test8() {
+func test7() {
 	x := NewFractionFromFloat64(0.7, -1)
 	y := NewFractionFromFloat64(0.5, -1)
 	x.AddInt(2)
-	fmt.Println(x, x.String(), x.Round(), x.Float64(), 0.7+2)
+	fmt.Println("0.7 + 2 =", x.String(), x.Round(), x.Float64(), 0.7+2)
 	y.SubInt(4)
-	fmt.Println(y, y.String(), y.Round(), y.Float64(), 0.5-4)	
+	fmt.Println("0.5 - 4 =", y.String(), y.Round(), y.Float64(), 0.5-4)
+}
+
+func test8() {
+	x := NewFraction(1, 3)
+	y := NewFraction(1, 2)
+	fmt.Println(" ", x.String(), x.Float64())
+	fmt.Println("+", y.String(), y.Float64())
+	x.Add(y)
+	fmt.Println("=", x.String(), x.Float64())
+}
+
+func test9() {
+	x := NewFraction(1, 2)
+	y := NewFraction(1, 3)
+	fmt.Println(" ", x.String(), x.Float64())
+	fmt.Println("-", y.String(), y.Float64())
+	x.Sub(y)
+	fmt.Println("=", x.String(), x.Float64())
 }
 
 func main() {
@@ -247,12 +274,15 @@ func main() {
 	fmt.Println("---")
 	test3()
 	fmt.Println("---")
+	test4()
+	fmt.Println("---")
 	test5()
 	fmt.Println("---")
 	test6()
-	fmt.Println("---")	
+	fmt.Println("---")
 	test7()
-	fmt.Println("---")	
+	fmt.Println("---")
 	test8()
+	fmt.Println("---")
+	test9()
 }
-
