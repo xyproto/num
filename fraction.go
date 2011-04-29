@@ -6,9 +6,12 @@ import (
 	"strconv"
 )
 
+const defaultMaxReduceIterations = 400
+
 type Fraction struct {
-	num int // numerator
-	dum int // denominator
+	top int // numerator
+	bot int // denominator
+	maxReduceIterations int // maximum number of iterations used to reduce the fraction
 }
 
 func min(a, b int) int {
@@ -33,18 +36,22 @@ func abs(a int) int {
 }
 
 func (my *Fraction) reduce() {
-	var maxtry int = 300
-	for trydiv := min(maxtry, min(abs(my.num), abs(my.dum))); trydiv >= 2; trydiv-- {
-		if (my.num/trydiv)*trydiv == my.num && (my.dum/trydiv)*trydiv == my.dum {
-			my.num /= trydiv
-			my.dum /= trydiv
+	counter := 0
+	for trydiv := min(abs(my.top), abs(my.bot)); trydiv >= 2; trydiv-- {
+		if (my.top/trydiv)*trydiv == my.top && (my.bot/trydiv)*trydiv == my.bot {
+			my.top /= trydiv
+			my.bot /= trydiv
 		}
+		if counter == my.maxReduceIterations {
+			break
+		}
+		counter++
 	}
 	my.prettyNegative()
 }
 
 func (my *Fraction) Float64() float64 {
-	return float64(my.num) / float64(my.dum)
+	return float64(my.top) / float64(my.bot)
 }
 
 func (my *Fraction) Int() int {
@@ -56,96 +63,111 @@ func (my *Fraction) Round() int {
 }
 
 func (my *Fraction) String() string {
-	if my.num == 1 && my.dum == 1 {
+	if my.top == my.bot {
 		return "1"
 	}
-	return strconv.Itoa(my.num) + "/" + strconv.Itoa(my.dum)
+	return strconv.Itoa(my.top) + "/" + strconv.Itoa(my.bot)
 }
 
 func (my *Fraction) prettyNegative() {
-	if (my.num < 0 && my.dum < 0) || (my.num > 0 && my.dum < 0) {
-		my.num = -my.num
-		my.dum = -my.dum
+	if (my.top < 0 && my.bot < 0) || (my.top > 0 && my.bot < 0) {
+		my.top = -my.top
+		my.bot = -my.bot
 	}
 }
 
 func (my *Fraction) Multiply(x Fraction) {
-	my.num *= x.num
-	my.dum *= x.dum
+	my.top *= x.top
+	my.bot *= x.bot
 	my.reduce()
 }
 
 func (my *Fraction) Divide(x Fraction) {
-	my.num *= x.dum
-	my.dum *= x.num
+	my.top *= x.bot
+	my.bot *= x.top
 	my.reduce()
 }
 
 func (my *Fraction) Add(x Fraction) {
-	my.num = my.num*x.dum + x.num*my.dum
-	my.dum = my.dum * x.dum
+	my.top = my.top*x.bot + x.top*my.bot
+	my.bot = my.bot * x.bot
 	my.reduce()
 }
 
 func (my *Fraction) Sub(x Fraction) {
-	my.num = my.num*x.dum - x.num*my.dum
-	my.dum = my.dum * x.dum
+	my.top = my.top*x.bot - x.top*my.bot
+	my.bot = my.bot * x.bot
 	my.reduce()
 }
 
 func (my *Fraction) MultiplyInt(x int) {
-	my.num *= x
+	my.top *= x
 	my.reduce()
 }
 
 func (my *Fraction) DivideInt(x int) {
-	my.dum *= x
+	my.bot *= x
 	my.reduce()
 }
 
 func (my *Fraction) AddInt(x int) {
-	my.num += my.dum * x
+	my.top += my.bot * x
 	my.reduce()
 }
 
 func (my *Fraction) SubInt(x int) {
-	my.num -= my.dum * x
+	my.top -= my.bot * x
 	my.reduce()
 }
 
-func NewFraction(num int, dum int) Fraction {
-	var f Fraction
-	f.num = num
-	if dum == 0 {
+// takes a numinator, denumintator and how many iterations should be used (max)
+// to reduce the fraction, during calculations
+func NewFraction(num int, dom int) Fraction {
+	var frac Fraction
+	frac.top = num
+	if dom == 0 {
 		panic(fmt.Sprintf("Can't divide %v on 0", num))
 	}
-	f.dum = dum
-	f.reduce()
-	return f
+	frac.bot = dom
+	frac.maxReduceIterations = defaultMaxReduceIterations
+	frac.reduce()
+	return frac
+}
+
+func (my *Fraction) SetMaxReduceIterations(maxReduceIterations int) {
+	my.maxReduceIterations = maxReduceIterations
+}
+
+// Splits up a fraction into an integer part, and the rest as another fraction
+func (my *Fraction) Splitup() (int, Fraction) {
+	i := my.Int()
+	clone := *my
+	clone.SubInt(i)
+	return i, clone
 }
 
 // Tries to convert a float to a fraction
-// Takes a float and a maximum number of iterations (can be -1)
+// Takes a float and a maximum number of iterations to find the fraction (can be -1)
 func NewFractionFromFloat64(f float64, maxIterations int) Fraction {
 	// stackoverflow.com/questions/95727/how-to-convert-floats-to-human-readable-fractions
 	num := 1
-	dum := 1
-	result := float64(num) / float64(dum)
+	dom := 1
+	result := float64(num) / float64(dom)
 	counter := 0
 	for result != f {
 		if result < f {
 			num++
 		} else {
-			dum++
-			num = int(f * float64(dum))
+			dom++
+			num = int(f * float64(dom))
 		}
-		result = float64(num) / float64(dum)
+		result = float64(num) / float64(dom)
 		if counter == maxIterations {
 			break
 		}
 		counter++
 	}
-	return NewFraction(num, dum)
+	return NewFraction(num, dom)
 }
 
 func NewFractionFromInt(num int) Fraction {
@@ -157,24 +179,24 @@ func NewFractionFromVoid() Fraction {
 }
 
 func NewFractionFromString(exp string) Fraction {
-	num := 0
-	dum := 1
+	top := 0
+	bot := 1
 	parts := strings.Split(exp, "/", -1)
 	if len(parts) == 2 {
 		if value, err := strconv.Atoi(parts[0]); err == nil {
-			num = value
+			top = value
 		} else {
 			panic(fmt.Sprintf("Invalid first part of the fraction: %s", parts[0]))
 		}
 		if value, err := strconv.Atoi(parts[1]); err == nil {
-			dum = value
+			bot = value
 		} else {
 			panic(fmt.Sprintf("Invalid second part of the fraction: %s", parts[1]))
 		}
 	} else {
 		panic(fmt.Sprintf("This does not look like a fraction: %s", exp))
 	}
-	return NewFraction(num, dum)
+	return NewFraction(top, bot)
 }
 
 func test1() {
@@ -183,30 +205,30 @@ func test1() {
 	//f3 := NewFraction(20, 0)
 	f3 := NewFraction(20, 2)
 	f3.reduce()
-	fmt.Println(f1, f2, f3)
+	fmt.Println(f1.String(), f2.String(), f3.String())
 }
 
 func test2() {
 	f := NewFraction(22, 2)
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFraction(33, 3)
-	fmt.Println(f)
+	fmt.Println(f.String())
 }
 
 func test3() {
 	var f Fraction
 	f = NewFraction(16, -10)
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFractionFromInt(123)
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFractionFromVoid()
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFractionFromString("3/7")
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFractionFromString("6/-14")
-	fmt.Println(f)
+	fmt.Println(f.String())
 	f = NewFractionFromString("-3/7")
-	fmt.Println(f)
+	fmt.Println(f.String())
 }
 
 func test4() {
@@ -234,6 +256,7 @@ func test5() {
 
 func test6() {
 	var pi float64 = 3.14159265359
+	fmt.Println("num dom i", "\t\t", "fraction", "\t", "float", "\t\t", "rounded")
 	f := NewFractionFromFloat64(0.5, -1)
 	fmt.Println(f, "\t\t", f.String(), "\t\t", f.Float64(), "\t\t", f.Round())
 	f = NewFractionFromFloat64(pi, 10000)
@@ -267,6 +290,12 @@ func test9() {
 	fmt.Println("=", x.String(), x.Float64())
 }
 
+func test10() {
+	x := NewFraction(3, 2)
+	i, f := x.Splitup()
+	fmt.Println(x.String(), "is also", i, "and", f.String())
+}
+
 func main() {
 	test1()
 	fmt.Println("---")
@@ -285,4 +314,6 @@ func main() {
 	test8()
 	fmt.Println("---")
 	test9()
+	fmt.Println("---")
+	test10()
 }
