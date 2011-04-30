@@ -36,6 +36,11 @@ func abs(a int) int {
 }
 
 func (my *Fraction) reduce() {
+	if my.top == my.bot {
+		my.top = 1
+		my.bot = 1
+		return
+	}
 	counter := 0
 	for trydiv := min(abs(my.top), abs(my.bot)); trydiv >= 2; trydiv-- {
 		if (my.top/trydiv)*trydiv == my.top && (my.bot/trydiv)*trydiv == my.bot {
@@ -63,9 +68,6 @@ func (my *Fraction) Round() int {
 }
 
 func (my *Fraction) String() string {
-	if my.top == my.bot {
-		return "1"
-	}
 	return strconv.Itoa(my.top) + "/" + strconv.Itoa(my.bot)
 }
 
