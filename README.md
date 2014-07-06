@@ -1,6 +1,8 @@
 gofractions
 ===========
 
+[![Build Status](https://travis-ci.org/xyproto/gofractions.svg?branch=master)](https://travis-ci.org/xyproto/gofractions)
+
 A library for dealing with fractions.
 
 http://go.pkgdoc.org/github.com/xyproto/gofractions
