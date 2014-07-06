@@ -15,10 +15,10 @@ func Test1(t *testing.T) {
 	f3, _ := NewFraction(20, 2)
 	f3.reduce()
 	if f1.String() != f3.String() {
-		t.Errorf("Should be equal:", f1.String(), f3.String())
+		t.Errorf("Should be equal: %s %s\n", f1.String(), f3.String())
 	}
 	if f1.String() == f2.String() {
-		t.Errorf("Should be different:", f1.String(), f2.String())
+		t.Errorf("Should be different: %s %s \n", f1.String(), f2.String())
 	}
 }
 
