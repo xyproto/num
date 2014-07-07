@@ -26,14 +26,15 @@ type Fraction struct {
  * fraction during calculations is set to the default value.
  */
 func NewFraction(num int64, dom int64) (*Fraction, error) {
-	frac := &Fraction{}
-	frac.top = num
 	if dom == 0 {
-		return frac, errors.New("Division by zero")
+		return nil, errors.New("Division by zero")
 	}
-	frac.bot = dom
-	frac.maxReduceIterations = defaultMaxReduceIterations
-	frac.exactfloat = true
+	frac := &Fraction{
+		top:                 num,
+		bot:                 dom,
+		maxReduceIterations: defaultMaxReduceIterations,
+		exactfloat:          true,
+	}
 	frac.reduce()
 	return frac, nil
 }
@@ -44,11 +45,13 @@ func NewFraction(num int64, dom int64) (*Fraction, error) {
 // Returns a bool that is True if the maximum number of iterations has not been reached
 func NewFractionFromFloat64(f float64, maxIterations int64) *Fraction {
 	// Thanks stackoverflow.com/questions/95727/how-to-convert-floats-to-human-readable-fractions
-	num := int64(1)
-	dom := int64(1)
-	result := float64(num) / float64(dom)
-	counter := int64(0)
-	exact := true
+	var (
+		num     int64   = 1
+		dom     int64   = 1
+		result  float64 = 1
+		counter int64   = 0
+		exact   bool    = true
+	)
 	for result != f {
 		if result < f {
 			num++
@@ -63,7 +66,7 @@ func NewFractionFromFloat64(f float64, maxIterations int64) *Fraction {
 		}
 		counter++
 	}
-	// Will never divide on 0, so we can ignore the error
+	// Will never divide on 0, so it's safe to ignore the error
 	frac, _ := NewFraction(num, dom)
 	frac.SetExact(exact)
 	return frac
@@ -75,14 +78,14 @@ func (my *Fraction) SetExact(exact bool) {
 
 // Create a new fraction that is "N/1"
 func NewFractionFromInt(num int64) *Fraction {
-	// Will never divide on 0, so we can ignore the error
+	// Will never divide on 0, so it's safe to ignore the error
 	frac, _ := NewFraction(num, 1)
 	return frac
 }
 
 // Creates a new fraction that is "0/1"
 func NewZeroFraction() *Fraction {
-	// Will never divide on 0, so we can ignore the error
+	// Will never divide on 0, so it's safe to ignore the error
 	frac, _ := NewFraction(0, 1)
 	return frac
 }
@@ -90,8 +93,10 @@ func NewZeroFraction() *Fraction {
 // Creates a new fraction from a string on the form "N/D", where N is the
 // numerator and D is the denominator. For example: "1/2" or "3/8".
 func NewFractionFromString(exp string) (*Fraction, error) {
-	top := int64(0)
-	bot := int64(1)
+	var (
+		top int64 = 0
+		bot int64 = 1
+	)
 	if !strings.Contains(exp, "/") {
 		return &Fraction{}, errors.New("This doesn't look like a fraction: " + exp)
 	}
@@ -129,8 +134,8 @@ func (my *Fraction) Rat() *big.Rat {
 func (my *Fraction) reduce() {
 	// Equal above and below are 1
 	if my.top == my.bot {
-		my.top = int64(1)
-		my.bot = int64(1)
+		my.top = 1
+		my.bot = 1
 		my.exactfloat = true
 		return
 	}

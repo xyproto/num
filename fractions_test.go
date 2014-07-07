@@ -6,12 +6,9 @@ import (
 	"testing"
 )
 
-// TODO: Convert all functions from feature tests to actual tests
-
 func Test1(t *testing.T) {
 	f1, _ := NewFraction(20, 2)
 	f2 := NewFractionFromInt(20)
-	//f3 := NewFraction(20, 0)
 	f3, _ := NewFraction(20, 2)
 	f3.reduce()
 	if f1.String() != f3.String() {
