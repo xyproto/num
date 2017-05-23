@@ -1,11 +1,11 @@
 gofractions
 ===========
 
-[![Build Status](https://travis-ci.org/xyproto/gofractions.svg?branch=master)](https://travis-ci.org/xyproto/gofractions)
+[![Build Status](https://travis-ci.org/xyproto/gofractions.svg?branch=master)](https://travis-ci.org/xyproto/gofractions) [![GoDoc](https://godoc.org/github.com/xyproto/gofractions?status.svg)](http://godoc.org/github.com/xyproto/gofractions)
 
-A library for dealing with fractions.
+A package for dealing with fractions.
 
-http://go.pkgdoc.org/github.com/xyproto/gofractions
+It can convert from floating point numbers or strings to fractions and back.
 
 
 Output from tests
