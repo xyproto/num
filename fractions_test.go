@@ -122,7 +122,7 @@ func Test11(t *testing.T) {
 	r = big.NewRat(2, 4)
 	f = NewFractionFromRat(r)
 	//f.SetMaxReduceIterations(-1)
-	rfloat, exact = r.Float64()
+	_, exact = r.Float64()
 	if exact != f.ExactFloat64() {
 		t.Errorf("Both should be exact: %s %s (%v %v)", r, f, exact, f.ExactFloat64())
 	}
