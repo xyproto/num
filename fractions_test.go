@@ -32,7 +32,12 @@ func Test3(t *testing.T) {
 	fmt.Println(f)
 	f = NewFractionFromInt(123)
 	fmt.Println(f)
-	f = NewZeroFraction()
+	z0 := Zero.String()
+	z1 := NewZeroFraction().String()
+	if z0 != z1 {
+		t.Errorf("Should be equal: %s %s\n", z0, z1)
+	}
+
 	fmt.Println(f)
 	f, _ = NewFractionFromString("3/7")
 	fmt.Println(f)

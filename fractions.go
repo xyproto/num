@@ -39,6 +39,11 @@ func NewFraction(num int64, dom int64) (*Fraction, error) {
 	return frac, nil
 }
 
+var (
+	Zero = &Fraction{0, 1, defaultMaxReduceIterations, true}
+	One  = &Fraction{1, 1, defaultMaxReduceIterations, true}
+)
+
 // Try to convert a float to a fraction
 // Takes a float and a maximum number of iterations to find the fraction
 // The maximum number of iterations can be -1 to iterate as much as necessary
@@ -180,7 +185,7 @@ func (my *Fraction) String() string {
 
 // If both the numinator and denuminator are negative, make them positive
 func (my *Fraction) prettyNegative() {
-	if (my.top < 0 && my.bot < 0) || (my.top > 0 && my.bot < 0) {
+	if (my.bot < 0) && (my.top != 0) {
 		my.top = -my.top
 		my.bot = -my.bot
 	}
