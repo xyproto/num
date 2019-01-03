@@ -290,7 +290,7 @@ func (f *Frac) SubInt(x int) {
 }
 
 func (f *Frac) IsZero() bool {
-	return 0 == f.Float64()
+	return f.top == 0
 }
 
 // Change the maximum number of iterations that should be used for reductions
