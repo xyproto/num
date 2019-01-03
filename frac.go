@@ -85,8 +85,8 @@ func NewFromFloat64(f float64, maxIterations int) *Frac {
 	return frac
 }
 
-func (my *Frac) SetExact(exact bool) {
-	my.exactfloat = exact
+func (f *Frac) SetExact(exact bool) {
+	f.exactfloat = exact
 }
 
 // Create a new fraction that is "N/1"
@@ -143,77 +143,77 @@ func NewFromRat(rat *big.Rat) *Frac {
 }
 
 // Returns a rational number (big.Rat)
-func (my *Frac) Rat() *big.Rat {
-	return big.NewRat(my.top, my.bot)
+func (f *Frac) Rat() *big.Rat {
+	return big.NewRat(f.top, f.bot)
 }
 
 // Try reducing the fraction up to a maximum number of iterations which
 // is stored in the fraction itself
-func (my *Frac) reduce() {
+func (f *Frac) reduce() {
 	// Equal above and below are 1
-	if my.top == my.bot {
-		my.top = 1
-		my.bot = 1
-		my.exactfloat = true
+	if f.top == f.bot {
+		f.top = 1
+		f.bot = 1
+		f.exactfloat = true
 		return
 	}
 	var counter int
-	for trydiv := min(abs(my.top), abs(my.bot)); trydiv >= 2; trydiv-- {
-		if (my.top/trydiv)*trydiv == my.top && (my.bot/trydiv)*trydiv == my.bot {
-			my.top /= trydiv
-			my.bot /= trydiv
+	for trydiv := min(abs(f.top), abs(f.bot)); trydiv >= 2; trydiv-- {
+		if (f.top/trydiv)*trydiv == f.top && (f.bot/trydiv)*trydiv == f.bot {
+			f.top /= trydiv
+			f.bot /= trydiv
 		}
-		if counter == my.maxReduceIterations {
-			my.exactfloat = false
+		if counter == f.maxReduceIterations {
+			f.exactfloat = false
 			break
 		}
 		counter++
 	}
-	my.prettyNegative()
+	f.prettyNegative()
 }
 
 // Return the fraction as a float64. Some precision may be lost.
-func (my *Frac) Float64() float64 {
-	return float64(my.top) / float64(my.bot)
+func (f *Frac) Float64() float64 {
+	return float64(f.top) / float64(f.bot)
 }
 
-func (my *Frac) ExactFloat64() bool {
-	return my.exactfloat
-}
-
-// Return the fraction as an int, not rounded
-func (my *Frac) Int() int {
-	return int(my.Float64())
+func (f *Frac) ExactFloat64() bool {
+	return f.exactfloat
 }
 
 // Return the fraction as an int, not rounded
-func (my *Frac) Int64() int64 {
-	return int64(my.Float64())
+func (f *Frac) Int() int {
+	return int(f.Float64())
+}
+
+// Return the fraction as an int, not rounded
+func (f *Frac) Int64() int64 {
+	return int64(f.Float64())
 }
 
 // Round of the fraction to an int
-func (my *Frac) Round() int64 {
-	return int64(my.Float64() + 0.5)
+func (f *Frac) Round() int64 {
+	return int64(f.Float64() + 0.5)
 }
 
 // Return the fraction as a string
-func (my *Frac) String() string {
-	return fmt.Sprintf("%d/%d", my.top, my.bot)
+func (f *Frac) String() string {
+	return fmt.Sprintf("%d/%d", f.top, f.bot)
 }
 
 // If both the numinator and denuminator are negative, make them positive
-func (my *Frac) prettyNegative() {
-	if (my.bot < 0) && (my.top != 0) {
-		my.top = -my.top
-		my.bot = -my.bot
+func (f *Frac) prettyNegative() {
+	if (f.bot < 0) && (f.top != 0) {
+		f.top = -f.top
+		f.bot = -f.bot
 	}
 }
 
 // Multiply by another fraction, don't return anything
-func (my *Frac) Mul(x *Frac) {
-	my.top *= x.top
-	my.bot *= x.bot
-	my.reduce()
+func (f *Frac) Mul(x *Frac) {
+	f.top *= x.top
+	f.bot *= x.bot
+	f.reduce()
 }
 
 // Multiply two fractions and return the result
@@ -224,10 +224,10 @@ func Mul(a, b *Frac) *Frac {
 }
 
 // Divide by another fraction, don't return anything
-func (my *Frac) Div(x *Frac) {
-	my.top *= x.bot
-	my.bot *= x.top
-	my.reduce()
+func (f *Frac) Div(x *Frac) {
+	f.top *= x.bot
+	f.bot *= x.top
+	f.reduce()
 }
 
 // Divide two fractions and return the result
@@ -238,10 +238,10 @@ func Div(a, b *Frac) *Frac {
 }
 
 // Add another fraction, don't return anything
-func (my *Frac) Add(x *Frac) {
-	my.top = my.top*x.bot + x.top*my.bot
-	my.bot = my.bot * x.bot
-	my.reduce()
+func (f *Frac) Add(x *Frac) {
+	f.top = f.top*x.bot + x.top*f.bot
+	f.bot = f.bot * x.bot
+	f.reduce()
 }
 
 // Add two fractions and return the result
@@ -252,10 +252,10 @@ func Add(a, b *Frac) *Frac {
 }
 
 // Subtract another fraction, don't return anything
-func (my *Frac) Sub(x *Frac) {
-	my.top = my.top*x.bot - x.top*my.bot
-	my.bot = my.bot * x.bot
-	my.reduce()
+func (f *Frac) Sub(x *Frac) {
+	f.top = f.top*x.bot - x.top*f.bot
+	f.bot = f.bot * x.bot
+	f.reduce()
 }
 
 // Subtract two fractions and return the result
@@ -266,38 +266,42 @@ func Sub(a, b *Frac) *Frac {
 }
 
 // Multiply with an integer and reduce the result
-func (my *Frac) MulInt(x int) {
-	my.top *= int64(x)
-	my.reduce()
+func (f *Frac) MulInt(x int) {
+	f.top *= int64(x)
+	f.reduce()
 }
 
 // Divide by an integer and reduce the result
-func (my *Frac) DivInt(x int) {
-	my.bot *= int64(x)
-	my.reduce()
+func (f *Frac) DivInt(x int) {
+	f.bot *= int64(x)
+	f.reduce()
 }
 
 // Add an integer and reduce the result
-func (my *Frac) AddInt(x int) {
-	my.top += my.bot * int64(x)
-	my.reduce()
+func (f *Frac) AddInt(x int) {
+	f.top += f.bot * int64(x)
+	f.reduce()
 }
 
 // Subtract an integer and reduce the result
-func (my *Frac) SubInt(x int) {
-	my.top -= my.bot * int64(x)
-	my.reduce()
+func (f *Frac) SubInt(x int) {
+	f.top -= f.bot * int64(x)
+	f.reduce()
+}
+
+func (f *Frac) IsZero() bool {
+	return 0 == f.Float64()
 }
 
 // Change the maximum number of iterations that should be used for reductions
-func (my *Frac) SetMaxReduceIterations(maxReduceIterations int) {
-	my.maxReduceIterations = maxReduceIterations
+func (f *Frac) SetMaxReduceIterations(maxReduceIterations int) {
+	f.maxReduceIterations = maxReduceIterations
 }
 
 // Split up a fraction into an integer part, and the rest as another fraction
-func (my *Frac) Splitup() (int, *Frac) {
-	i := my.Int()
-	clone := *my
+func (f *Frac) Splitup() (int, *Frac) {
+	i := f.Int()
+	clone := *f
 	clone.SubInt(i)
 	return i, &clone
 }
