@@ -96,11 +96,9 @@ func NewFromInt(num int64) *Num {
 	return frac
 }
 
-// Creates a new fraction that is "0/1"
+// NewZero returns a fraction that is "0/1"
 func NewZero() *Num {
-	// Will never divide on 0, so it's safe to ignore the error
-	frac, _ := New(0, 1)
-	return frac
+	return Zero
 }
 
 // Creates a new fraction from a string on the form "N/D", where N is the
