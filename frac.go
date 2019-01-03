@@ -159,6 +159,13 @@ func (f *Frac) reduce() {
 		f.exactfloat = true
 		return
 	}
+	// If above is zero, discard the bottom
+	if f.top == 0 {
+		f.bot = 1
+		f.exactfloat = true
+		return
+	}
+	// Try ot reduce the fraction
 	var counter int
 	for trydiv := min(abs(f.top), abs(f.bot)); trydiv >= 2; trydiv-- {
 		if (f.top/trydiv)*trydiv == f.top && (f.bot/trydiv)*trydiv == f.bot {
@@ -335,6 +342,18 @@ func (f *Frac) IsZero() bool {
 func Sqrt(f *Frac) *Frac {
 	// TODO: Use a numeric algorithm instead
 	return NewFromFloat64(math.Sqrt(float64(f.top))/math.Sqrt(float64(f.bot)), f.maxReduceIterations)
+}
+
+// Sin returns the sin of the number
+func Sin(f *Frac) *Frac {
+	// TODO: Use a numeric algorithm instead
+	return NewFromFloat64(math.Sin(f.Float64()), f.maxReduceIterations)
+}
+
+// Cos returns the sin of the number
+func Cos(f *Frac) *Frac {
+	// TODO: Use a numeric algorithm instead
+	return NewFromFloat64(math.Cos(f.Float64()), f.maxReduceIterations)
 }
 
 // Take the square root of this number
