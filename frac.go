@@ -90,7 +90,14 @@ func (my *Frac) SetExact(exact bool) {
 }
 
 // Create a new fraction that is "N/1"
-func NewFromInt(num int64) *Frac {
+func NewFromInt(num int) *Frac {
+	// Will never divide on 0, so it's safe to ignore the error
+	frac, _ := New(int64(num), 1)
+	return frac
+}
+
+// Create a new fraction that is "N/1"
+func NewFromInt64(num int64) *Frac {
 	// Will never divide on 0, so it's safe to ignore the error
 	frac, _ := New(num, 1)
 	return frac
