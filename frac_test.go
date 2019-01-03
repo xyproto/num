@@ -127,3 +127,10 @@ func Test11(t *testing.T) {
 		t.Errorf("Both should be exact: %s %s (%v %v)", r, f, exact, f.ExactFloat64())
 	}
 }
+
+func ExampleSqrt() {
+	x := NewFromInt(9)
+	fmt.Println(x.Sqrt())
+	// Output:
+	// 3
+}

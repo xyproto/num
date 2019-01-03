@@ -1,6 +1,6 @@
 # num
 
-[![Build Status](https://travis-ci.org/xyproto/gofractions.svg?branch=master)](https://travis-ci.org/xyproto/gofractions) [![GoDoc](https://godoc.org/github.com/xyproto/gofractions?status.svg)](http://godoc.org/github.com/xyproto/gofractions)
+[![Build Status](https://travis-ci.org/xyproto/num.svg?branch=master)](https://travis-ci.org/xyproto/num) [![GoDoc](https://godoc.org/github.com/xyproto/num?status.svg)](http://godoc.org/github.com/xyproto/num)
 
 Go module that provides a number type where numbers are stored internally as fractions.
 

@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"strconv"
 	"strings"
+	"math"
 )
 
 const defaultMaxReduceIterations = 400
@@ -217,10 +218,10 @@ func (f *Frac) Mul(x *Frac) {
 }
 
 // Multiply two fractions and return the result
-func Mul(a, b *Frac) *Frac {
+func Mul(a, b *Frac) (*Frac, error) {
 	top := a.top * b.top
 	bot := a.bot * b.bot
-	return MustNew(top, bot)
+	return New(top, bot)
 }
 
 // Divide by another fraction, don't return anything
@@ -231,10 +232,10 @@ func (f *Frac) Div(x *Frac) {
 }
 
 // Divide two fractions and return the result
-func Div(a, b *Frac) *Frac {
+func Div(a, b *Frac) (*Frac, error) {
 	top := a.top * b.bot
 	bot := a.bot * b.top
-	return MustNew(top, bot)
+	return New(top, bot)
 }
 
 // Add another fraction, don't return anything
@@ -271,10 +272,20 @@ func (f *Frac) MulInt(x int) {
 	f.reduce()
 }
 
+// Multiply with an integer and reduce the result
+func MulInt(f *Frac, x int) (*Frac, error) {
+	return New(f.top*int64(x), f.bot)
+}
+
 // Divide by an integer and reduce the result
 func (f *Frac) DivInt(x int) {
 	f.bot *= int64(x)
 	f.reduce()
+}
+
+// Divide by an integer and reduce the result
+func DivInt(f *Frac, x int) (*Frac, error) {
+	return New(f.top, f.bot*int64(x))
 }
 
 // Add an integer and reduce the result
@@ -283,14 +294,31 @@ func (f *Frac) AddInt(x int) {
 	f.reduce()
 }
 
+// Add an integer and reduce the result
+func AddInt(f *Frac, x int) *Frac {
+	return MustNew(f.top+f.bot*int64(x), f.bot)
+}
+
 // Subtract an integer and reduce the result
 func (f *Frac) SubInt(x int) {
 	f.top -= f.bot * int64(x)
 	f.reduce()
 }
 
+// Subtract an integer and reduce the result
+func SubInt(f *Frac, x int) *Frac {
+	return MustNew(f.top-f.bot*int64(x), f.bot)
+}
+
+// IsZero checks if this fraction is 0
 func (f *Frac) IsZero() bool {
 	return f.top == 0
+}
+
+// Sqrt returns the square root of the number
+func (f *Frac) Sqrt() float64 {
+	// TODO: Use a numberic algorithm
+	return math.Sqrt(float64(f.top)) / math.Sqrt(float64(f.bot))
 }
 
 // Change the maximum number of iterations that should be used for reductions
@@ -304,4 +332,14 @@ func (f *Frac) Splitup() (int, *Frac) {
 	clone := *f
 	clone.SubInt(i)
 	return i, &clone
+}
+
+// Copy creates a copy
+func (f *Frac) Copy() *Frac {
+	return &Frac{
+		top:                 f.top,
+		bot:                 f.bot,
+		maxReduceIterations: f.maxReduceIterations,
+		exactfloat:          f.exactfloat,
+	}
 }
