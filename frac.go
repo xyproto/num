@@ -294,6 +294,12 @@ func (f *Frac) AddInt(x int) {
 	f.reduce()
 }
 
+// Add an int64 and reduce the result
+func (f *Frac) AddInt64(x int64) {
+	f.top += f.bot * x
+	f.reduce()
+}
+
 // Add an integer and reduce the result
 func AddInt(f *Frac, x int) *Frac {
 	return MustNew(f.top+f.bot*int64(x), f.bot)
@@ -302,6 +308,12 @@ func AddInt(f *Frac, x int) *Frac {
 // Subtract an integer and reduce the result
 func (f *Frac) SubInt(x int) {
 	f.top -= f.bot * int64(x)
+	f.reduce()
+}
+
+// Subtract an int64 and reduce the result
+func (f *Frac) SubInt64(x int64) {
+	f.top -= f.bot * x
 	f.reduce()
 }
 
@@ -335,17 +347,39 @@ func Square(f *Frac) *Frac {
 	return x
 }
 
+func (f *Frac) Abs() {
+	if f.top < 0 {
+		f.top = -f.top
+	}
+	if f.bot < 0 {
+		f.bot = -f.bot
+	}
+}
+
+// Return the absolute value
+func Abs(f *Frac) *Frac {
+	x := f.Copy()
+	if f.top < 0 {
+		x.top = -x.top
+	}
+	if f.bot < 0 {
+		x.bot = -x.bot
+	}
+	x.reduce()
+	return x
+}
+
 // Change the maximum number of iterations that should be used for reductions
 func (f *Frac) SetMaxReduceIterations(maxReduceIterations int) {
 	f.maxReduceIterations = maxReduceIterations
 }
 
 // Split up a fraction into an integer part, and the rest as another fraction
-func (f *Frac) Splitup() (int, *Frac) {
-	i := f.Int()
+func (f *Frac) Splitup() (int64, *Frac) {
+	i64 := f.Int64()
 	clone := *f
-	clone.SubInt(i)
-	return i, &clone
+	clone.SubInt64(i64)
+	return i64, &clone
 }
 
 // Copy creates a copy
