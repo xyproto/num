@@ -1,4 +1,4 @@
-package gofractions
+package num
 
 // Return the smallest number of two given integers
 func min(a, b int64) int64 {

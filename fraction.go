@@ -1,4 +1,4 @@
-package gofractions
+package num
 
 import (
 	"errors"
