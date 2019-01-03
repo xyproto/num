@@ -332,8 +332,15 @@ func (f *Frac) IsZero() bool {
 
 // Sqrt returns the square root of the number
 func Sqrt(f *Frac) float64 {
-	// TODO: Use a numeric algorithm
+	// TODO: Use a numeric algorithm instead
 	return math.Sqrt(float64(f.top)) / math.Sqrt(float64(f.bot))
+}
+
+// Take the square root of this number
+func (f *Frac) Sqrt() {
+	// TODO: Use a numeric algorithm instead
+	x := math.Sqrt(float64(f.top)) / math.Sqrt(float64(f.bot))
+	f = NewFromFloat64(x, f.maxReduceIterations)
 }
 
 // Multiply this number by itself
