@@ -64,7 +64,7 @@ func Test5(t *testing.T) {
 }
 
 func Test6(t *testing.T) {
-	var pi float64 = 3.14159265359
+	var pi = 3.14159265359
 	fmt.Println("num dom i", "\t\t", "fraction", "\t", "float", "\t\t", "rounded")
 	f := NewFromFloat64(0.5, -1)
 	exact := f.ExactFloat64()

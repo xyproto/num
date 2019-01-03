@@ -62,8 +62,8 @@ func NewFromFloat64(f float64, maxIterations int64) *Num {
 		num     int64   = 1
 		dom     int64   = 1
 		result  float64 = 1
-		counter int64   = 0
-		exact   bool    = true
+		counter int64
+		exact   = true
 	)
 	for result != f {
 		if result < f {
@@ -107,7 +107,7 @@ func NewZero() *Num {
 // numerator and D is the denominator. For example: "1/2" or "3/8".
 func NewFromString(exp string) (*Num, error) {
 	var (
-		top int64 = 0
+		top int64
 		bot int64 = 1
 	)
 	if !strings.Contains(exp, "/") {
