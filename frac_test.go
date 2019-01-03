@@ -27,7 +27,7 @@ func Test2(t *testing.T) {
 }
 
 func Test3(t *testing.T) {
-	var f *Num
+	var f *Frac
 	f, _ = New(16, -10)
 	fmt.Println(f)
 	f = NewFromInt(123)
