@@ -201,8 +201,8 @@ func (f *Frac) Int64() int64 {
 }
 
 // Round of the fraction to an int
-func (f *Frac) Round() int64 {
-	return int64(f.Float64() + 0.5)
+func (f *Frac) Round() int {
+	return int(f.Float64() + 0.5)
 }
 
 // Return the fraction as a string
