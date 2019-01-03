@@ -200,6 +200,9 @@ func (f *Frac) Round() int64 {
 
 // Return the fraction as a string
 func (f *Frac) String() string {
+	if f.bot == 1 {
+		return fmt.Sprintf("%d", f.top)
+	}
 	return fmt.Sprintf("%d/%d", f.top, f.bot)
 }
 
@@ -246,18 +249,18 @@ func (f *Frac) Add(x *Frac) {
 	f.reduce()
 }
 
-// Add two fractions and return the result
-func Add(a, b *Frac) *Frac {
-	top := a.top*b.bot + b.top*a.bot
-	bot := a.bot * b.bot
-	return MustNew(top, bot)
-}
-
 // Subtract another fraction, don't return anything
 func (f *Frac) Sub(x *Frac) {
 	f.top = f.top*x.bot - x.top*f.bot
 	f.bot = f.bot * x.bot
 	f.reduce()
+}
+
+// Add two fractions and return the result
+func Add(a, b *Frac) *Frac {
+	top := a.top*b.bot + b.top*a.bot
+	bot := a.bot * b.bot
+	return MustNew(top, bot)
 }
 
 // Subtract two fractions and return the result
@@ -307,6 +310,11 @@ func AddInt(f *Frac, x int) *Frac {
 }
 
 // Subtract an integer and reduce the result
+func SubInt(f *Frac, x int) *Frac {
+	return MustNew(f.top-f.bot*int64(x), f.bot)
+}
+
+// Subtract an integer and reduce the result
 func (f *Frac) SubInt(x int) {
 	f.top -= f.bot * int64(x)
 	f.reduce()
@@ -316,11 +324,6 @@ func (f *Frac) SubInt(x int) {
 func (f *Frac) SubInt64(x int64) {
 	f.top -= f.bot * x
 	f.reduce()
-}
-
-// Subtract an integer and reduce the result
-func SubInt(f *Frac, x int) *Frac {
-	return MustNew(f.top-f.bot*int64(x), f.bot)
 }
 
 // IsZero checks if this fraction is 0
