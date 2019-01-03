@@ -13,7 +13,7 @@ const defaultMaxReduceIterations = 400
 type Frac struct {
 	top                 int64 // numerator
 	bot                 int64 // denominator
-	maxReduceIterations int64 // maximum number of iterations for reducing the fraction
+	maxReduceIterations int   // maximum number of iterations for reducing the fraction
 	exactfloat          bool  // if the float64 representation will be exact
 }
 
@@ -56,13 +56,13 @@ func MustNew(num, dom int64) *Frac {
 // Takes a float and a maximum number of iterations to find the fraction
 // The maximum number of iterations can be -1 to iterate as much as necessary
 // Returns a bool that is True if the maximum number of iterations has not been reached
-func NewFromFloat64(f float64, maxIterations int64) *Frac {
+func NewFromFloat64(f float64, maxIterations int) *Frac {
 	// Thanks stackoverflow.com/questions/95727/how-to-convert-floats-to-human-readable-fractions
 	var (
 		num     int64   = 1
 		dom     int64   = 1
 		result  float64 = 1
-		counter int64
+		counter int
 		exact   = true
 	)
 	for result != f {
@@ -157,7 +157,7 @@ func (my *Frac) reduce() {
 		my.exactfloat = true
 		return
 	}
-	counter := int64(0)
+	var counter int
 	for trydiv := min(abs(my.top), abs(my.bot)); trydiv >= 2; trydiv-- {
 		if (my.top/trydiv)*trydiv == my.top && (my.bot/trydiv)*trydiv == my.bot {
 			my.top /= trydiv
@@ -179,6 +179,11 @@ func (my *Frac) Float64() float64 {
 
 func (my *Frac) ExactFloat64() bool {
 	return my.exactfloat
+}
+
+// Return the fraction as an int, not rounded
+func (my *Frac) Int() int {
+	return int(my.Float64())
 }
 
 // Return the fraction as an int, not rounded
@@ -205,17 +210,31 @@ func (my *Frac) prettyNegative() {
 }
 
 // Multiply by another fraction, don't return anything
-func (my *Frac) Multiply(x *Frac) {
+func (my *Frac) Mul(x *Frac) {
 	my.top *= x.top
 	my.bot *= x.bot
 	my.reduce()
 }
 
+// Multiply two fractions and return the result
+func Mul(a, b *Frac) *Frac {
+	top := a.top * b.top
+	bot := a.bot * b.bot
+	return MustNew(top, bot)
+}
+
 // Divide by another fraction, don't return anything
-func (my *Frac) Divide(x *Frac) {
+func (my *Frac) Div(x *Frac) {
 	my.top *= x.bot
 	my.bot *= x.top
 	my.reduce()
+}
+
+// Divide two fractions and return the result
+func Div(a, b *Frac) *Frac {
+	top := a.top * b.bot
+	bot := a.bot * b.top
+	return MustNew(top, bot)
 }
 
 // Add another fraction, don't return anything
@@ -225,6 +244,13 @@ func (my *Frac) Add(x *Frac) {
 	my.reduce()
 }
 
+// Add two fractions and return the result
+func Add(a, b *Frac) *Frac {
+	top := a.top*b.bot + b.top*a.bot
+	bot := a.bot * b.bot
+	return MustNew(top, bot)
+}
+
 // Subtract another fraction, don't return anything
 func (my *Frac) Sub(x *Frac) {
 	my.top = my.top*x.bot - x.top*my.bot
@@ -232,38 +258,45 @@ func (my *Frac) Sub(x *Frac) {
 	my.reduce()
 }
 
+// Subtract two fractions and return the result
+func Sub(a, b *Frac) *Frac {
+	top := a.top*b.bot - b.top*a.bot
+	bot := a.bot * b.bot
+	return MustNew(top, bot)
+}
+
 // Multiply with an integer and reduce the result
-func (my *Frac) MultiplyInt(x int64) {
-	my.top *= x
+func (my *Frac) MulInt(x int) {
+	my.top *= int64(x)
 	my.reduce()
 }
 
 // Divide by an integer and reduce the result
-func (my *Frac) DivideInt(x int64) {
-	my.bot *= x
+func (my *Frac) DivInt(x int) {
+	my.bot *= int64(x)
 	my.reduce()
 }
 
 // Add an integer and reduce the result
-func (my *Frac) AddInt(x int64) {
-	my.top += my.bot * x
+func (my *Frac) AddInt(x int) {
+	my.top += my.bot * int64(x)
 	my.reduce()
 }
 
 // Subtract an integer and reduce the result
-func (my *Frac) SubInt(x int64) {
-	my.top -= my.bot * x
+func (my *Frac) SubInt(x int) {
+	my.top -= my.bot * int64(x)
 	my.reduce()
 }
 
 // Change the maximum number of iterations that should be used for reductions
-func (my *Frac) SetMaxReduceIterations(maxReduceIterations int64) {
+func (my *Frac) SetMaxReduceIterations(maxReduceIterations int) {
 	my.maxReduceIterations = maxReduceIterations
 }
 
 // Split up a fraction into an integer part, and the rest as another fraction
-func (my *Frac) Splitup() (int64, *Frac) {
-	i := my.Int64()
+func (my *Frac) Splitup() (int, *Frac) {
+	i := my.Int()
 	clone := *my
 	clone.SubInt(i)
 	return i, &clone

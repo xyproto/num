@@ -45,21 +45,21 @@ func Test3(t *testing.T) {
 func Test4(t *testing.T) {
 	x, _ := NewFromString("1/3")
 	y, _ := NewFromString("2/4")
-	x.Multiply(y)
+	x.Mul(y)
 	fmt.Println(x.String(), "looks nicer than", (1.0/3.0)*(2.0/4.0))
-	y.MultiplyInt(2)
+	y.MulInt(2)
 	fmt.Println("y is", y.String())
 	z := x
-	z.Multiply(y)
+	z.Mul(y)
 	fmt.Println("z is", z.String(), z.Round(), "(", (1.0/3.0)*(2.0/4.0)*2*(2.0/4.0), ")")
 }
 
 func Test5(t *testing.T) {
 	x := NewFromInt(3)
 	y := NewFromInt(2)
-	x.Divide(y)
+	x.Div(y)
 	fmt.Println(x.String(), x.Round())
-	x.DivideInt(2)
+	x.DivInt(2)
 	fmt.Println(x.String(), x.Round())
 }
 
