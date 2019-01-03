@@ -3,10 +3,10 @@ package num
 import (
 	"errors"
 	"fmt"
+	"math"
 	"math/big"
 	"strconv"
 	"strings"
-	"math"
 )
 
 const defaultMaxReduceIterations = 400
@@ -316,9 +316,23 @@ func (f *Frac) IsZero() bool {
 }
 
 // Sqrt returns the square root of the number
-func (f *Frac) Sqrt() float64 {
-	// TODO: Use a numberic algorithm
+func Sqrt(f *Frac) float64 {
+	// TODO: Use a numeric algorithm
 	return math.Sqrt(float64(f.top)) / math.Sqrt(float64(f.bot))
+}
+
+// Multiply this number by itself
+func (f *Frac) Square() {
+	f.top *= f.top
+	f.reduce()
+}
+
+// Multiply this number by itself
+func Square(f *Frac) *Frac {
+	x := f.Copy()
+	x.top *= x.top
+	x.reduce()
+	return x
 }
 
 // Change the maximum number of iterations that should be used for reductions

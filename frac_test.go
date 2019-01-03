@@ -130,7 +130,7 @@ func Test11(t *testing.T) {
 
 func ExampleSqrt() {
 	x := NewFromInt(9)
-	fmt.Println(x.Sqrt())
+	fmt.Println(Sqrt(x))
 	// Output:
 	// 3
 }
