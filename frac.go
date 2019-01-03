@@ -218,10 +218,13 @@ func (f *Frac) Mul(x *Frac) {
 }
 
 // Multiply two fractions and return the result
-func Mul(a, b *Frac) (*Frac, error) {
+func Mul(a, b *Frac) *Frac {
 	top := a.top * b.top
 	bot := a.bot * b.bot
-	return New(top, bot)
+	if bot == 0 {
+		panic("Multiplying with a number that has 0 as the denominator!")
+	}
+	return MustNew(top, bot)
 }
 
 // Divide by another fraction, don't return anything
