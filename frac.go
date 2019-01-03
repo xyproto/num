@@ -9,7 +9,8 @@ import (
 	"strings"
 )
 
-const defaultMaxReduceIterations = 400
+// DefaultMaxIterations is the default value of iterations when converting a float to a fractional number.
+const DefaultMaxIterations = 400
 
 type Frac struct {
 	top                 int64 // numerator
@@ -19,8 +20,8 @@ type Frac struct {
 }
 
 var (
-	Zero = &Frac{0, 1, defaultMaxReduceIterations, true}
-	One  = &Frac{1, 1, defaultMaxReduceIterations, true}
+	Zero = &Frac{0, 1, DefaultMaxIterations, true}
+	One  = &Frac{1, 1, DefaultMaxIterations, true}
 
 	ErrDivByZero = errors.New("division by zero")
 )
@@ -36,7 +37,7 @@ func New(num, dom int64) (*Frac, error) {
 	frac := &Frac{
 		top:                 num,
 		bot:                 dom,
-		maxReduceIterations: defaultMaxReduceIterations,
+		maxReduceIterations: DefaultMaxIterations,
 		exactfloat:          true,
 	}
 	frac.reduce()
