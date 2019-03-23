@@ -66,7 +66,7 @@ func Test5(t *testing.T) {
 func Test6(t *testing.T) {
 	var pi = 3.14159265359
 	fmt.Println("num dom i", "\t\t", "fraction", "\t", "float", "\t\t", "rounded")
-	f := NewFromFloat64(0.5, -1)
+	f := NewFromFloat64(0.5, I)
 	exact := f.ExactFloat64()
 	fmt.Println(f, "\t\t", f.String(), "\t\t", f.Float64(), "\t\texact:", exact, "\t\trounded:", f.Round())
 	f = NewFromFloat64(pi, 10000)
@@ -75,8 +75,8 @@ func Test6(t *testing.T) {
 }
 
 func Test7(t *testing.T) {
-	x := NewFromFloat64(0.7, -1)
-	y := NewFromFloat64(0.5, -1)
+	x := NewFromFloat64(0.7, I)
+	y := NewFromFloat64(0.5, I)
 	x.AddInt(2)
 	fmt.Println("0.7 + 2 =", x.String(), x.Round(), x.Float64(), 0.7+2)
 	y.SubInt(4)
@@ -133,4 +133,12 @@ func ExampleSqrt() {
 	fmt.Println(Sqrt(x).Float64())
 	// Output:
 	// 3
+}
+
+func ExampleUnicode() {
+	//x, _ := New(3, 47)
+	x := NewFromFloat64(0.06382978723404255, L)
+	fmt.Println(x)
+	// Output:
+	// 3⁄47
 }

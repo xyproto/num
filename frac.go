@@ -9,8 +9,16 @@ import (
 	"strings"
 )
 
-// DefaultMaxIterations is the default value of iterations when converting a float to a fractional number.
-const DefaultMaxIterations = 400
+const (
+	// DefaultMaxIterations is the default value of iterations when converting a float to a fractional number.
+	DefaultMaxIterations = 400
+
+	// Inifinite iterations
+	I = -1
+
+	// A large number of iterations
+	L = 9999
+)
 
 type Frac struct {
 	top                 int64 // numerator
@@ -210,7 +218,61 @@ func (f *Frac) String() string {
 	if f.bot == 1 {
 		return fmt.Sprintf("%d", f.top)
 	}
-	return fmt.Sprintf("%d/%d", f.top, f.bot)
+	switch f.top {
+	case 1:
+		switch f.bot {
+		case 2:
+			return "½"
+		case 3:
+			return "⅓"
+		case 4:
+			return "¼"
+		case 5:
+			return "⅕"
+		case 6:
+			return "⅙"
+		case 7:
+			return "⅐"
+		case 8:
+			return "⅛"
+		case 9:
+			return "⅑"
+		case 10:
+			return "⅒"
+		}
+	case 2:
+		switch f.bot {
+		case 3:
+			return "⅔"
+		case 5:
+			return "⅖"
+		}
+	case 3:
+		switch f.bot {
+		case 5:
+			return "⅗"
+		case 8:
+			return "⅜"
+		}
+	case 4:
+		switch f.bot {
+		case 5:
+			return "⅘"
+		}
+	case 5:
+		switch f.bot {
+		case 6:
+			return "⅚"
+		case 8:
+			return "⅝"
+		}
+	case 7:
+		switch f.bot {
+		case 8:
+			return "⅞"
+		}
+	}
+	return fmt.Sprintf("%d\u2044%d", f.top, f.bot)
 }
 
 // If both the numinator and denuminator are negative, make them positive
