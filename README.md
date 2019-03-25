@@ -6,12 +6,12 @@ Go module that provides a number type where numbers are stored internally as fra
 
 Floating point numbers (`float64`) can be converted to this number type and back.
 
-Includes a small command line utility for converting floats to fractions and for reducing fractions. Can return unicode fractions.
+Includes a small command line utility for converting floats to fractions and for reducing fractions, that can also return unicode fractions:
 
-    go get -u github.com/xyproto/num/cmd/dog
+    go get -u github.com/xyproto/num/cmd/fract
 
 Example use:
 
-    dog 2/5
-    dog 0.8
-    dog 123
+    fract 2/5
+    fract 0.8
+    fract 123

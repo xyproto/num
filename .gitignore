@@ -1,0 +1,6 @@
+cmd/fract/fract
+*.bak
+*.tmp
+*~
+*.swp
+*.o
