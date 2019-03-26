@@ -2,16 +2,33 @@
 
 [![Build Status](https://travis-ci.org/xyproto/num.svg?branch=master)](https://travis-ci.org/xyproto/num) [![GoDoc](https://godoc.org/github.com/xyproto/num?status.svg)](http://godoc.org/github.com/xyproto/num)
 
-Go module that provides a number type where numbers are stored internally as fractions.
+Utility for dividing two numbers and returning the simplified fraction. Will use unicode, if possible.
 
-Floating point numbers (`float64`) can be converted to this number type and back.
+## Example use
 
-Includes a small command line utility for converting floats to fractions and for reducing fractions, that can also return unicode fractions:
+    > frac 2/5
+    ⅖
+    > frac 0.8
+    ⅘
+    > frac 123
+    123
+
+Use only 100 iterations when creating a fraction that represents the given float:
+
+    > frac -m 100 0.777777777
+    10/13
+
+## Go module
+
+Also includes a Go module that provides the same functionality.
+
+## Installation
+
+Development version:
 
     go get -u github.com/xyproto/num/cmd/frac
 
-Example use:
+With make:
 
-    frac 2/5
-    frac 0.8
-    frac 123
+    make && sudo make install
+
