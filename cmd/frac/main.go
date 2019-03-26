@@ -80,9 +80,9 @@ func quit(err error) {
 func main() {
 	app := cli.NewApp()
 
-	app.Name = "fract"
+	app.Name = "frac"
 	app.Usage = "convert a float to a fraction, or simplify a fraction"
-	app.UsageText = "fract [options] [fraction or floating point number]"
+	app.UsageText = "frac [options] [fraction or floating point number]"
 
 	app.Version = "0.2"
 	app.HideHelp = true

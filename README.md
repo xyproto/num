@@ -8,10 +8,10 @@ Floating point numbers (`float64`) can be converted to this number type and back
 
 Includes a small command line utility for converting floats to fractions and for reducing fractions, that can also return unicode fractions:
 
-    go get -u github.com/xyproto/num/cmd/fract
+    go get -u github.com/xyproto/num/cmd/frac
 
 Example use:
 
-    fract 2/5
-    fract 0.8
-    fract 123
+    frac 2/5
+    frac 0.8
+    frac 123
