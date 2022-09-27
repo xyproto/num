@@ -327,16 +327,12 @@ func (f *Frac) Sub(x *Frac) {
 
 // Add two fractions and return the result
 func Add(a, b *Frac) *Frac {
-	top := a.top*b.bot + b.top*a.bot
-	bot := a.bot * b.bot
-	return MustNew(top, bot)
+	return MustNew(a.top*b.bot+b.top*a.bot, a.bot*b.bot)
 }
 
 // Subtract two fractions and return the result
 func Sub(a, b *Frac) *Frac {
-	top := a.top*b.bot - b.top*a.bot
-	bot := a.bot * b.bot
-	return MustNew(top, bot)
+	return MustNew(a.top*b.bot-b.top*a.bot, a.bot*b.bot)
 }
 
 // Multiply with an integer and reduce the result
@@ -482,4 +478,19 @@ func (f *Frac) Copy() *Frac {
 		maxReduceIterations: f.maxReduceIterations,
 		exactfloat:          f.exactfloat,
 	}
+}
+
+// Quickly check if one fraction is larger than the other, by only multiplying and comparing
+func (f *Frac) GreaterThan(b *Frac) bool {
+	return f.top*b.bot > f.bot*b.top
+}
+
+// Quickly check if one fraction is less than the other, by only multiplying and comparing
+func (f *Frac) LessThan(b *Frac) bool {
+	return f.top*b.bot < f.bot*b.top
+}
+
+// Quickly check if one fraction is equal to the other, by only multiplying and comparing
+func (f *Frac) Equal(b *Frac) bool {
+	return f.top*b.bot == f.bot*b.top
 }
