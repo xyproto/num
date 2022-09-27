@@ -2,7 +2,7 @@
 
 [![GoDoc](https://godoc.org/github.com/xyproto/num?status.svg)](http://godoc.org/github.com/xyproto/num)
 
-Utility for dividing two numbers and returning the simplified fraction. Will use unicode, if possible.
+Go module for dealing with fractions, and a utility for dividing two numbers and returning the simplified fraction.
 
 ## Example use
 
@@ -18,19 +18,9 @@ Use only 100 iterations when creating a fraction that represents the given float
     > frac -m 100 0.777777777
     10/13
 
-## Go module
-
-Also includes a Go module that provides the same functionality.
-
 ## Installation
 
-Development version:
-
-    go get -u github.com/xyproto/num/cmd/frac
-
-With make:
-
-    make && sudo make install
+    go install github.com/xyproto/num/cmd/frac@latest
 
 ## General info
 
