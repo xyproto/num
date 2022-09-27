@@ -1,6 +1,6 @@
 # num
 
-[![Build Status](https://travis-ci.org/xyproto/num.svg?branch=master)](https://travis-ci.org/xyproto/num) [![GoDoc](https://godoc.org/github.com/xyproto/num?status.svg)](http://godoc.org/github.com/xyproto/num)
+[![GoDoc](https://godoc.org/github.com/xyproto/num?status.svg)](http://godoc.org/github.com/xyproto/num)
 
 Utility for dividing two numbers and returning the simplified fraction. Will use unicode, if possible.
 
@@ -32,3 +32,6 @@ With make:
 
     make && sudo make install
 
+## General info
+
+* License: BSD-3
